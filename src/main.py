@@ -10,11 +10,12 @@ from measurements import (
     print_state as print_3qubit_state
 )
 
+from corrections import extract_bob_qubit, apply_corrections, print_state as print_bob
+
 
 def create_qubit(alpha, beta):
     state = np.array([alpha, beta])
-    norm = np.linalg.norm(state)
-    return state / norm
+    return state / np.linalg.norm(state)
 
 
 def print_state(state):
@@ -23,41 +24,44 @@ def print_state(state):
 
 
 def main():
-    # -------- STEP 1: Create Qubit --------
-    alpha = 0.6
-    beta = 0.8
-
+    # Step 1: Create qubit
+    alpha, beta = 0.6, 0.8
     qubit = create_qubit(alpha, beta)
 
     print("Initial Qubit:")
     print_state(qubit)
 
-    # -------- STEP 2: Bell Pair --------
+    # Step 2: Bell pair
     print("\nGenerating Bell Pair...\n")
-
     bell_state = create_bell_pair()
     print_2qubit_state(bell_state)
 
-    # -------- STEP 3: Combine (3-Qubit System) --------
+    # Step 3: Combine system
     system = create_three_qubit_state(qubit, bell_state)
 
     print("\nInitial 3-Qubit System:")
     print_3qubit_state(system)
 
-    # -------- STEP 4: Bell Operations --------
+    # Step 4: Bell ops
     system = apply_cnot_0_1(system)
     system = apply_hadamard_0(system)
 
     print("\nAfter Bell Operations:")
     print_3qubit_state(system)
 
-    # -------- STEP 5: Measurement --------
+    # Step 5: Measurement
     outcome, collapsed = measure_first_two_qubits(system)
 
-    print(f"\nMeasurement Outcome (classical bits): {outcome}")
-
+    print(f"\nMeasurement Outcome: {outcome}")
     print("\nCollapsed State:")
     print_3qubit_state(collapsed)
+
+    # Step 6: Correction
+    bob_qubit = extract_bob_qubit(collapsed)
+    corrected = apply_corrections(outcome, bob_qubit)
+
+    print("\nCorrected Bob Qubit:")
+    print_bob(corrected)
 
 
 if __name__ == "__main__":

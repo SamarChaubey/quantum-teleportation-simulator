@@ -1,7 +1,7 @@
 import numpy as np
 
 from teleportation_circuit import create_bell_pair, print_state as print_2qubit_state
-
+from bloch_visualization import plot_bloch
 from measurements import (
     create_three_qubit_state,
     apply_cnot_0_1,
@@ -61,6 +61,7 @@ def main():
     print_bob(corrected)
 
     print_fidelity(qubit, corrected)
+    plot_bloch(qubit, corrected)
 
 
 if __name__ == "__main__":

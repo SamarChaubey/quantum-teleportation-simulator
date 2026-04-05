@@ -13,6 +13,7 @@ from measurements import (
 from corrections import extract_bob_qubit, apply_corrections, print_state as print_bob
 
 from verification import print_fidelity
+from noise import apply_noise
 
 
 def create_qubit(alpha, beta):
@@ -62,7 +63,10 @@ def main():
 
     print_fidelity(qubit, corrected)
     plot_bloch(qubit, corrected)
+    qubit = create_qubit(alpha, beta)
 
+    # Apply noise
+    qubit = apply_noise(qubit, noise_level=0.02)
 
 if __name__ == "__main__":
     main()

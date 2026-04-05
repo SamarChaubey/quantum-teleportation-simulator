@@ -1,4 +1,7 @@
+from platform import system
+
 import numpy as np
+from noise_comparison import run_comparison
 
 from teleportation_circuit import create_bell_pair, print_state as print_2qubit_state
 from bloch_visualization import plot_bloch
@@ -12,7 +15,7 @@ from measurements import (
 
 from corrections import extract_bob_qubit, apply_corrections, print_state as print_bob
 
-from verification import print_fidelity
+from verification import fidelity, print_fidelity
 from noise import apply_noise
 
 
@@ -64,9 +67,10 @@ def main():
     print_fidelity(qubit, corrected)
     plot_bloch(qubit, corrected)
     qubit = create_qubit(alpha, beta)
-
-    # Apply noise
-    qubit = apply_noise(qubit, noise_level=0.02)
+    print("\nRunning comparison experiment...\n")
+    run_comparison(20)  # keep runs small for demo
+    
+    
 
 if __name__ == "__main__":
     main()

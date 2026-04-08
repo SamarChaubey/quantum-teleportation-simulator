@@ -5,6 +5,7 @@ from measurements import *
 from corrections import *
 from verification import fidelity
 from noise import apply_noise
+from output_formatting import print_comparison_results
 
 
 def create_qubit(alpha, beta):
@@ -19,7 +20,7 @@ def run_comparison(runs=50):
     ideal_fidelity = []
     noisy_fidelity = []
 
-    for _ in range(runs):
+    for i in range(runs):
         bell = create_bell_pair()
 
         # -------- Ideal --------
@@ -45,9 +46,14 @@ def run_comparison(runs=50):
         corrected = apply_corrections(outcome, bob)
 
         noisy_fidelity.append(fidelity(original, corrected))
-
-    print("\nAverage Ideal Fidelity:", np.mean(ideal_fidelity))
-    print("Average Noisy Fidelity:", np.mean(noisy_fidelity))
+        
+        # Progress indicator
+        if (i + 1) % max(1, runs // 5) == 0:
+            progress_bar = "█" * ((i + 1) * 50 // runs) + "░" * ((runs - i - 1) * 50 // runs)
+            print(f"\r  {progress_bar} {i + 1}/{runs}", end="", flush=True)
+    
+    print("\n")  # New line after progress bar
+    print_comparison_results(ideal_fidelity, noisy_fidelity, runs)
 
 
 if __name__ == "__main__":
